@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  donnees:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: service-donnees
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./database.db:/app/database.db:Z
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  traitement:
+    build:
+      context: ./processing-service
+      dockerfile: Dockerfile
+    container_name: service-traitement
+    ports:
+      - "5002:5002"
+    environment:
+      - DATA_SERVICE_URL=http://donnees:5001
+    networks:
+      - app-network
+    depends_on:
+      - donnees
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
