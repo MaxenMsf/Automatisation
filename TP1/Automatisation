@@ -1,0 +1,41 @@
+  264  podman run hello-world
+  265  podman run -it -d ubuntu
+  267  podman ps
+  268  podman rm magical_stonebraker 
+  269  podman stop magical_stonebraker 
+  270  podman stop magical_stonebraker
+  271  podman rm magical_stonebraker 
+  272  podman ps
+  273  touch Containerfile
+  275  podman build -t mon-serveur-web .
+  277  podman run -it mon-serveur-web:latest 
+  278  podman build mon-serveur-web 
+  279  podman build -t mon-serveur-web .
+  280  podman run -it mon-serveur-web:latest 
+  282  podman images
+  284  podman rmi d07e38ad7622
+  285  podman stop d07e38ad7622
+  286  podman ps
+  287  podman ps -a
+  288  podman rm wizardly_wilson 
+  289  podman rm boring_johnson 
+  290  podman rm mon-conteneur 
+  291  podman rm charming_stonebraker 
+  293  podman images
+  294  podman rmi d07e38ad762
+  295  podman images
+  296  podman rmi 9234e8fb04c4
+  297  podman rmi mon-serveur-web:latest 
+  298  podman images
+  300  touch docker-compose.yml
+  302  podman-compose up -d
+  303  podman images
+  304  podman ps -a
+  305  podman rm tp1_db_1 
+  306  podman rm tp1_web_1 
+  308  podman ps -a
+  310  podman rm -f tp1_db_1 
+  311  podman images
+  312  podman rmi mysql:8.0 
+  313  podman rmi tp1_web:latest 
+  314  podman image
