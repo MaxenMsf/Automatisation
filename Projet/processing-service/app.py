@@ -8,6 +8,20 @@ app = Flask(__name__)
 DATA_SERVICE_URL = os.getenv('DATA_SERVICE_URL', 'http://localhost:5001')
 processor = DataProcessor(DATA_SERVICE_URL)
 
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({
+        "service": "Service de traitement",
+        "status": "running",
+        "endpoints": {
+            "/users/all": "GET - Récupérer tous les utilisateurs",
+            "/users/count": "GET - Compter les utilisateurs",
+            "/users/domain/<domain>": "GET - Utilisateurs par domaine",
+            "/process": "POST - Requête personnalisée",
+            "/health": "GET - Vérifier l'état du service"
+        }
+    }), 200
+
 @app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({"status": "healthy", "service": "processing-service"}), 200

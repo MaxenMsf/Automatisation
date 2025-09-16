@@ -1,7 +1,12 @@
 version: '3.8'
 
+# Configuration du pod Podman
+x-pod: &pod-config
+  pod: app-pod
+  
 services:
   donnees:
+    <<: *pod-config
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,16 +15,18 @@ services:
       - "5001:5001"
     volumes:
       - ./database.db:/app/database.db:Z
-    networks:
-      - app-network
+    environment:
+      - FLASK_ENV=production
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      test: ["CMD-SHELL", "curl -f http://localhost:5001/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 40s
     restart: unless-stopped
 
   traitement:
+    <<: *pod-config
     build:
       context: ./processing-service
       dockerfile: Dockerfile
@@ -27,21 +34,15 @@ services:
     ports:
       - "5002:5002"
     environment:
-      - DATA_SERVICE_URL=http://donnees:5001
-    networks:
-      - app-network
+      - DATA_SERVICE_URL=http://localhost:5001
+      - FLASK_ENV=production
     depends_on:
-      - donnees
+      donnees:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      test: ["CMD-SHELL", "curl -f http://localhost:5002/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 40s
     restart: unless-stopped
-
-networks:
-  app-network:
-    driver: bridge
-
-volumes:
-  db-data:
